@@ -9,13 +9,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class LeadingQuestion extends JFrame implements ActionListener {
-    JLabel titleLabel, questionLabel,answerLabel;
-    JTextField answerTextField;
-    JButton okButton, cancelButton;
-    User user;
+    private JLabel titleLabel, questionLabel,answerLabel;
+    private JTextField answerTextField;
+    private JButton okButton, cancelButton;
+    private AppModule appModule;
+    private User user;
 
 
-    public LeadingQuestion(String question, User user){
+    public LeadingQuestion(String question,AppModule appModule, User user){
+        this.appModule=appModule;
         this.user = user;
 
         setVisible(true);
@@ -57,7 +59,6 @@ public class LeadingQuestion extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent e){
         if(e.getSource()==okButton){
-            AppModule appModule = new AppModule();
             String answer = answerTextField.getText();
             appModule.sendAnswer(answer);
             String token = appModule.receiveString();
@@ -65,7 +66,7 @@ public class LeadingQuestion extends JFrame implements ActionListener {
                 setVisible(false);
                 dispose();
                 user.setToken(token);
-                new PasswordChanger(false, user);
+                new PasswordChanger(false,appModule, user);
             }
 
             else {
@@ -76,6 +77,7 @@ public class LeadingQuestion extends JFrame implements ActionListener {
         else if(e.getSource()==cancelButton){
             setVisible(false);
             dispose();
+            appModule.disconnect();
             new PasswordReminder();
         }
     }

@@ -10,9 +10,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class PasswordReminder extends JFrame implements ActionListener {
-    JLabel titleLabel, loginLabel;
-    JTextField loginTextField;
-    JButton okButton, cancelButton;
+    private JLabel titleLabel, loginLabel;
+    private JTextField loginTextField;
+    private JButton okButton, cancelButton;
+    private AppModule appModule;
 
     public PasswordReminder(){
         setVisible(true);
@@ -50,15 +51,16 @@ public class PasswordReminder extends JFrame implements ActionListener {
         add(cancelButton);
     }
 
+
     public void actionPerformed(ActionEvent e){
         if(e.getSource()==okButton){
             String login = loginTextField.getText();
-            AppModule appModule = new AppModule();
+            appModule = new AppModule();
             appModule.sendLeadingQuestionQuery(login);
             String leadingQuestion = appModule.receiveString();
 
             if(leadingQuestion!=null){
-                new LeadingQuestion(leadingQuestion,new User(login));
+                new LeadingQuestion(leadingQuestion, appModule,new User(login));
                 setVisible(false);
                 dispose();
             }
@@ -71,6 +73,7 @@ public class PasswordReminder extends JFrame implements ActionListener {
         else if(e.getSource()==cancelButton){
             setVisible(false);
             dispose();
+            appModule.disconnect();
             new Login();
         }
     }

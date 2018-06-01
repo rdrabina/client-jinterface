@@ -11,11 +11,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Login extends JFrame implements ActionListener{
-    JLabel titleLabel, loginLabel, passwordLabel;
-    JTextField loginTextField;
-    JButton signInButton, signUpButton, remindThePasswordButton;
-    JPasswordField passwordField;
-    JButton okButton;
+    private JLabel titleLabel, loginLabel, passwordLabel;
+    private JTextField loginTextField;
+    private JButton signInButton, signUpButton, remindThePasswordButton;
+    private JPasswordField passwordField;
+    private JButton okButton;
 
     public Login(){
         setVisible(true);
@@ -69,10 +69,10 @@ public class Login extends JFrame implements ActionListener{
 
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == signInButton){
-            AppModule appModule = new AppModule();
             String login = loginTextField.getText();
             char [] passwordChar = passwordField.getPassword();
             String password = new String (passwordChar);
+            AppModule appModule = new AppModule();
             appModule.sendLoginData(login,password);
             String token = appModule.receiveString();
 
@@ -80,14 +80,13 @@ public class Login extends JFrame implements ActionListener{
                 setVisible(false);
                 dispose();
                 User user = new User(login,token);
-                new Home(user);
+                new Home(appModule,user);
             }
 
             else{
                 JOptionPane.showMessageDialog(okButton, "Login or password is incorrect. Try again");
+                appModule.disconnect();
             }
-
-
         }
 
         if (e.getSource() == signUpButton){

@@ -4,6 +4,7 @@ import Erlang.AppModule;
 import Logging.Login;
 import Users.User;
 import Website.Home;
+import com.sun.corba.se.impl.oa.poa.AOMEntry;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,14 +12,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class PasswordChanger extends JFrame implements ActionListener {
-    JLabel titleLabel, passwordLabel, confirmPasswordLabel;
-    JPasswordField passwordField, confirmPasswordField;
-    JButton okButton, cancelButton;
-    boolean isFromHome;
-    User user;
+    private JLabel titleLabel, passwordLabel, confirmPasswordLabel;
+    private JPasswordField passwordField, confirmPasswordField;
+    private JButton okButton, cancelButton;
+    private boolean isFromHome;
+    private AppModule appModule;
+    private User user;
 
-    public PasswordChanger(boolean isFromHome, User user){
+    public PasswordChanger(boolean isFromHome, AppModule appModule, User user){
         this.isFromHome=isFromHome;
+        this.appModule=appModule;
         this.user=user;
 
         setVisible(true);
@@ -74,15 +77,17 @@ public class PasswordChanger extends JFrame implements ActionListener {
 
             else if (password.equals(confirmedPassword))
             {
-                AppModule appModule = new AppModule();
                 appModule.sendPasswordChangerData(user.geteMail(),password,user.getToken());
                 appModule.receiveIsSuccess();
                 if(appModule.isReceivedSuccess()){
                     JOptionPane.showMessageDialog(okButton, "Password changed successfully");
                     setVisible(false);
                     dispose();
-                    if(isFromHome) new Home(user);
-                    else new Login();
+                    if(isFromHome) new Home(appModule,user);
+                    else{
+                        appModule.disconnect();
+                        new Login();
+                    }
                 }
                 else{
                     JOptionPane.showMessageDialog(okButton, "Some problem with new password occured. Try again");
@@ -100,8 +105,11 @@ public class PasswordChanger extends JFrame implements ActionListener {
         if (e.getSource()==cancelButton){
             setVisible(false);
             dispose();
-            if(isFromHome) new Home(user);
-            else new Login();
+            if(isFromHome) new Home(appModule,user);
+            else{
+                appModule.disconnect();
+                new Login();
+            }
         }
     }
 }

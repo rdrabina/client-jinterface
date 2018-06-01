@@ -9,12 +9,12 @@ import java.awt.event.ActionListener;
 
 
 public class Registration extends JFrame implements ActionListener {
-    JLabel titleLabel, nameLabel, surnameLabel, eMailLabel, passwordLabel, confirmPasswordLabel, addressLabel, phoneNumberLabel, isNecessaryLabel, leadingQuestionLabel, answerLabel;
-    JTextField nameTextField, surnameTextField, eMailTextField, addressTextField, phoneNumberTextField, answerTextField;
-    JButton okButton, clearButton, cancelButton;
-    JPasswordField passwordField, confirmPasswordField;
-    JComboBox leadingQuestion;
-    JCheckBox terms;
+    private JLabel titleLabel, nameLabel, surnameLabel, eMailLabel, passwordLabel, confirmPasswordLabel, addressLabel, phoneNumberLabel, isNecessaryLabel, leadingQuestionLabel, answerLabel;
+    private JTextField nameTextField, surnameTextField, eMailTextField, addressTextField, phoneNumberTextField, answerTextField;
+    private JButton okButton, clearButton, cancelButton;
+    private JPasswordField passwordField, confirmPasswordField;
+    private JComboBox leadingQuestion;
+    private JCheckBox terms;
 
     public Registration()
     {
@@ -169,6 +169,7 @@ public class Registration extends JFrame implements ActionListener {
                         JOptionPane.showMessageDialog(okButton, "Registered successfully");
                         setVisible(false);
                         dispose();
+                        appModule.disconnect();
                         new Login();
                     }
                     else{

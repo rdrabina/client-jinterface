@@ -12,7 +12,7 @@ public class AppModule {
     private String nodeServer = "server@Radzio"; //tutaj trzeba zmienic nazwe serwera
     private String cookie = "mycookie";
     private String nameOfProcess = "moduleName";
-    boolean isReceivedSuccess = false;
+    private boolean isReceivedSuccess = false;
 
 
 
@@ -33,13 +33,10 @@ public class AppModule {
     public AppModule() {
         try {
             client = new OtpSelf(nodeClient, cookie);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        server = new OtpPeer(nodeServer);
-
-        try {
+            server = new OtpPeer(nodeServer);
             connection = client.connect(server);
+            System.out.println("Connection established with "+nodeServer+"\n");
+            //System.out.println(client.pid());
         } catch (IOException e) {
             System.out.println("Problems with connection");
         } catch (OtpAuthException e) {
@@ -47,11 +44,18 @@ public class AppModule {
         }
     }
 
+    public void disconnect(){
+        if(connection!=null){
+            System.out.println("Disconnected");
+            connection.close();
+        }
+    }
+
     public boolean isReceivedSuccess() {
         return isReceivedSuccess;
     }
 
-    public void sendData(OtpErlangTuple tuple) {
+    private void sendData(OtpErlangTuple tuple) {
         try {
             connection.send(nameOfProcess, tuple);
             // System.out.println(response);
@@ -60,7 +64,7 @@ public class AppModule {
         }
     }
 
-    public OtpErlangObject receiveReply() {
+    private OtpErlangObject receiveReply() {
         OtpErlangObject reply = null;
         try {
             reply = connection.receive();
@@ -75,7 +79,7 @@ public class AppModule {
         return reply;
     }
 
-    public String getStringFromTuple(OtpErlangObject otpErlangObject) {
+    private String getStringFromTuple(OtpErlangObject otpErlangObject) {
         if (otpErlangObject instanceof OtpErlangString) {
             if (!((OtpErlangString) otpErlangObject).stringValue().isEmpty())
                 throw new IllegalArgumentException("Received no data");
@@ -86,8 +90,8 @@ public class AppModule {
         return null;
     }
 
-    public void setIsReceivedSuccess(OtpErlangObject reply) {
-        OtpErlangTuple receivedMessage;
+    private OtpErlangTuple setIsReceivedSuccess(OtpErlangObject reply) {
+        OtpErlangTuple receivedMessage=null;
 
         if (reply instanceof OtpErlangTuple) {
             receivedMessage = (OtpErlangTuple) reply;
@@ -95,6 +99,7 @@ public class AppModule {
                 isReceivedSuccess = true;
             }
         }
+        return receivedMessage;
     }
 
     public void receiveIsSuccess() {
@@ -104,8 +109,7 @@ public class AppModule {
 
     public String receiveString() {
         OtpErlangObject reply = receiveReply();
-        setIsReceivedSuccess(reply);
-        OtpErlangTuple receivedMessage = null;
+        OtpErlangTuple receivedMessage = setIsReceivedSuccess(reply);
 
         if (isReceivedSuccess) {
             OtpErlangObject otpErlangObject = receivedMessage.elementAt(1);
@@ -116,8 +120,7 @@ public class AppModule {
 
     public String receiveNameAndSurname() {
         OtpErlangObject reply = receiveReply();
-        setIsReceivedSuccess(reply);
-        OtpErlangTuple receivedMessage = null;
+        OtpErlangTuple receivedMessage = setIsReceivedSuccess(reply);
 
         if (isReceivedSuccess) {
             OtpErlangObject otpErlangObject = receivedMessage.elementAt(1);

@@ -12,11 +12,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Home extends JFrame implements ActionListener {
-    JLabel titleLabel, textLabel;
-    JButton nameAndSurnameButton, changePasswordButton, signOutButton, okButton;
-    User user;
+    private JLabel titleLabel, textLabel;
+    private JButton nameAndSurnameButton, changePasswordButton, signOutButton, okButton;
+    private AppModule appModule;
+    private User user;
 
-    public Home(User user){
+    public Home(AppModule appModule,User user){
+        this.appModule=appModule;
         this.user=user;
 
         setVisible(true);
@@ -55,7 +57,6 @@ public class Home extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent e){
         if(e.getSource()==nameAndSurnameButton){
-            AppModule appModule = new AppModule();
             appModule.sendNameAndSurnameQuery(user.geteMail(),user.getToken());
             String nameAndSurname = appModule.receiveNameAndSurname();
             if(nameAndSurname!=null){
@@ -71,13 +72,14 @@ public class Home extends JFrame implements ActionListener {
         if(e.getSource()==changePasswordButton){
             setVisible(false);
             dispose();
-            new PasswordChanger(true,user);
+            new PasswordChanger(true,appModule,user);
         }
 
         if(e.getSource()==signOutButton){
             JOptionPane.showMessageDialog(okButton, "Signed out");
             setVisible(false);
             dispose();
+            appModule.disconnect();
             new Login();
         }
     }
