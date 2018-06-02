@@ -55,6 +55,7 @@ public class PasswordReminder extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e){
         if(e.getSource()==okButton){
             String login = loginTextField.getText();
+            if (login.equals("")) login =" ";
             appModule = new AppModule();
             appModule.sendLeadingQuestionQuery(login);
             String leadingQuestion = appModule.receiveString();
@@ -67,6 +68,7 @@ public class PasswordReminder extends JFrame implements ActionListener {
             else {
                 JOptionPane.showMessageDialog(okButton, "Login does not exist. Try again");
                 loginTextField.setText("");
+                appModule.disconnect();
             }
         }
 

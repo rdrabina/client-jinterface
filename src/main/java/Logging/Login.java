@@ -18,7 +18,6 @@ public class Login extends JFrame implements ActionListener{
     private JButton okButton;
 
     public Login(){
-        setVisible(true);
         setSize(700, 700);
         setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -64,6 +63,7 @@ public class Login extends JFrame implements ActionListener{
         add(signInButton);
         add(signUpButton);
         add(remindThePasswordButton);
+        setVisible(true);
     }
 
 

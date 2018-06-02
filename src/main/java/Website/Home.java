@@ -59,7 +59,7 @@ public class Home extends JFrame implements ActionListener {
         if(e.getSource()==nameAndSurnameButton){
             appModule.sendNameAndSurnameQuery(user.geteMail(),user.getToken());
             String nameAndSurname = appModule.receiveNameAndSurname();
-            if(nameAndSurname!=null){
+            if(!nameAndSurname.equals(null+" "+null)){
                 JOptionPane.showMessageDialog(okButton, "You are "+nameAndSurname);
             }
 

@@ -60,8 +60,9 @@ public class LeadingQuestion extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e){
         if(e.getSource()==okButton){
             String answer = answerTextField.getText();
-            appModule.sendAnswer(answer);
+            appModule.sendAnswer(answer,user.geteMail());
             String token = appModule.receiveString();
+            System.out.println("token "+token);
             if(appModule.isReceivedSuccess()){
                 setVisible(false);
                 dispose();

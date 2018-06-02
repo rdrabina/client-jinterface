@@ -28,8 +28,8 @@ public class Registration extends JFrame implements ActionListener {
         titleLabel.setForeground(Color.blue);
         titleLabel.setFont(new Font("Serif", Font.BOLD, 20));
 
-        nameLabel = new JLabel("Name:");
-        surnameLabel = new JLabel("Surname:");
+        nameLabel = new JLabel("Name*:");
+        surnameLabel = new JLabel("Surname*:");
         eMailLabel = new JLabel("E-mail*:");
         passwordLabel = new JLabel("Password*:");
         confirmPasswordLabel = new JLabel("Confirm password*:");
@@ -150,9 +150,15 @@ public class Registration extends JFrame implements ActionListener {
                 String phoneNumber = phoneNumberTextField.getText();
                 String question = (String) leadingQuestion.getSelectedItem();
                 String answer = answerTextField.getText();
+                if(name.trim().equals("")){
+                    JOptionPane.showMessageDialog(okButton, "Enter the name");
+                }
 
+                else if (surname.trim().equals("")){
+                    JOptionPane.showMessageDialog(okButton, "Enter the surname");
+                }
 
-                if (!eMail.contains("@") || !eMail.contains(".")) {
+                else if (!eMail.contains("@") || !eMail.contains(".")) {
                     JOptionPane.showMessageDialog(okButton, "Enter the valid email");
                     terms.setSelected(false);
                 }
@@ -174,6 +180,7 @@ public class Registration extends JFrame implements ActionListener {
                     }
                     else{
                         JOptionPane.showMessageDialog(okButton, "Entered e-mail is already used. Try again.");
+                        appModule.disconnect();
                     }
                 }
 

@@ -11,7 +11,7 @@ public class AppModule {
     private String nodeClient = "client";
     private String nodeServer = "server@Radzio"; //tutaj trzeba zmienic nazwe serwera
     private String cookie = "mycookie";
-    private String nameOfProcess = "moduleName";
+    private String nameOfProcess = "auth_server";
     private boolean isReceivedSuccess = false;
 
 
@@ -81,7 +81,7 @@ public class AppModule {
 
     private String getStringFromTuple(OtpErlangObject otpErlangObject) {
         if (otpErlangObject instanceof OtpErlangString) {
-            if (!((OtpErlangString) otpErlangObject).stringValue().isEmpty())
+            if (((OtpErlangString) otpErlangObject).stringValue().isEmpty())
                 throw new IllegalArgumentException("Received no data");
             else
                 return ((OtpErlangString) otpErlangObject).stringValue();
@@ -95,8 +95,12 @@ public class AppModule {
 
         if (reply instanceof OtpErlangTuple) {
             receivedMessage = (OtpErlangTuple) reply;
+            System.out.println(receivedMessage);
             if (receivedMessage.elementAt(0).equals(new OtpErlangAtom("ok"))) {
                 isReceivedSuccess = true;
+            }
+            else {
+                isReceivedSuccess = false;
             }
         }
         return receivedMessage;
@@ -169,11 +173,12 @@ public class AppModule {
         sendData(otpErlangTuple);
     }
 
-    public void sendAnswer(String answer) {
-        OtpErlangObject[] message = new OtpErlangObject[3];
+    public void sendAnswer(String answer,String login) {
+        OtpErlangObject[] message = new OtpErlangObject[4];
         message[0] = new OtpErlangAtom("answer_verification");
         message[1] = client.pid();
-        message[2] = new OtpErlangString(answer);
+        message[2] = new OtpErlangString(login);
+        message[3] = new OtpErlangString(answer);
 
         OtpErlangTuple otpErlangTuple = new OtpErlangTuple(message);
         sendData(otpErlangTuple);
